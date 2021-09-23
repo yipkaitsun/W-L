@@ -1,28 +1,26 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+import 'package:http/http.dart' as http;
 
 class SubmitEventPage extends StatelessWidget {
-  const SubmitEventPage({Key? key, required this.setEventList})
-      : super(key: key);
-  final ValueChanged<String> setEventList;
+  const SubmitEventPage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Submit Event'),
       ),
-      body: FormSubmit(setEventList: setEventList),
+      body: FormSubmit(),
     );
   }
 }
 
 class FormSubmit extends StatefulWidget {
-  final ValueChanged<String> setEventList;
-  const FormSubmit({
-    Key? key,
-    required this.setEventList,
-  }) : super(key: key);
+  const FormSubmit({Key? key}) : super(key: key);
 
   @override
   State<FormSubmit> createState() => _FormSubmitState();
@@ -37,7 +35,7 @@ class _FormSubmitState extends State<FormSubmit> {
   @override
   void initState() {
     super.initState();
-    _eventType = "wwwww";
+    _eventType = "W";
     _dateTime = DateTime(1699);
   }
 
@@ -84,15 +82,39 @@ class _FormSubmitState extends State<FormSubmit> {
             dateTime: _dateTime,
             setDateTime: _setDateTime,
           ),
-          ElevatedButton(
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                _formKey.currentState!.save();
-                widget.setEventList("asd");
-              }
-            },
-            child: const Text('Submit'),
-          ),
+          Expanded(
+              child: Align(
+            alignment: Alignment.bottomCenter,
+            child: SizedBox(
+              width: double.infinity * 0.8,
+              child: ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    _formKey.currentState!.save();
+                    Map<String, String> requestHeaders = {
+                      'Content-type': 'application/json',
+                      'Accept': 'application/json',
+                    };
+
+                    http
+                        .post(
+                      Uri.parse('http://223.18.74.197:5000/event'),
+                      headers: requestHeaders,
+                      body: jsonEncode(<String, dynamic>{
+                        'time': _dateTime.toString(),
+                        'place': _place,
+                        'type': _eventType
+                      }),
+                    )
+                        .then((isSuccess) {
+                      Navigator.pop(context, isSuccess);
+                    });
+                  }
+                },
+                child: const Text('Submit'),
+              ),
+            ),
+          ))
         ],
       ),
     );
@@ -123,8 +145,7 @@ class DropDownMenu extends StatelessWidget {
       onSaved: (String? newValue) {
         setEventType(newValue!);
       },
-      items: <String>['wwwww', 'LLLL']
-          .map<DropdownMenuItem<String>>((String value) {
+      items: <String>['W', 'L'].map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(value),

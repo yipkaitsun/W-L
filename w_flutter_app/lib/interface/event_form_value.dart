@@ -3,6 +3,5 @@ class FormValue {
   DateTime date;
   String type;
 
-  FormValue({  required this.date,required this.place,required this.type});
-
+  FormValue({required this.date, required this.place, required this.type});
 }

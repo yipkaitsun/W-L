@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:w_flutter_app/interface/event_dao.dart';
 import 'package:w_flutter_app/submit_event.dart';
 import 'interface/event.dart';
+import 'package:http/http.dart' as http;
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 void main() {
   runApp(const MyApp());
@@ -37,6 +42,16 @@ class _MyHomePageState extends State<MyHomePage> {
         event.title,
         style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20.0),
       ),
+      onLongPress: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const SubmitEventPage())).then((value) {
+          if (value == true) {
+            _getEventList();
+          }
+        });
+      },
       subtitle: Text(event.subtitle),
       leading: Icon(
         event.icon,
@@ -45,17 +60,28 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  List<Widget> _eventlist = <Widget>[];
+  List<Event> _eventList = [];
   @override
   initState() {
     super.initState();
-    _eventlist = [];
+    _getEventList();
+    IO.io('http://223.18.74.197:5000');
   }
 
   void _addEvent(Event event) {
     setState(() {
-      _eventlist = List.from(_eventlist)..add(convertDto(event));
+      _eventList = List.from(_eventList)..add(event);
     });
+  }
+
+  Future<void> _getEventList() async {
+    _eventList.clear();
+    var result =
+        (await http.get(Uri.parse('http://223.18.74.197:5000/eventList')));
+    List<dynamic> events = jsonDecode(result.body);
+    for (var event in events) {
+      _addEvent((EventDao.fromJson(event).ConvertToEvent()));
+    }
   }
 
   @override
@@ -64,24 +90,28 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        child: ListView(
-          children: _eventlist,
-        ),
+      body: RefreshIndicator(
+        onRefresh: _getEventList,
+        child: ListView.builder(
+            itemCount: _eventList.length,
+            itemBuilder: (context, index) {
+              return convertDto(_eventList[index]);
+            }),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const SubmitEventPage()))
-              .then((value) => _addEvent(value));
-          //_addEvent(Event("123", '234', Icons.event_available));
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const SubmitEventPage())).then((value) {
+            if (value == true) {
+              _getEventList();
+            }
+          });
         },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 }

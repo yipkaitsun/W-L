@@ -36,6 +36,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   intl: ^0.17.0
   datetime_picker_formfield: ^2.0.0
+  socket_io: ^1.0.1
+  socket_io_client: ^1.0.1
 
 dev_dependencies:
   flutter_test:

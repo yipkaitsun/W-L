@@ -1,4 +1,3 @@
-
 class EventType {
   int id;
   String name;
@@ -7,8 +6,8 @@ class EventType {
 
   static List<EventType> getEventTypes() {
     return <EventType>[
-      EventType(1, 'wwwww'),
-      EventType(2, 'LLLLL'),
+      EventType(1, 'W'),
+      EventType(2, 'L'),
     ];
   }
 }
