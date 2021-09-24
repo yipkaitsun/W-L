@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:w_flutter_app/interface/event_dao.dart';
+import 'package:w_flutter_app/interface/planet.dart';
 import 'package:w_flutter_app/submit_event.dart';
+import 'package:w_flutter_app/widget/event_card.dart';
 import 'interface/event.dart';
 import 'package:http/http.dart' as http;
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -60,7 +62,8 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  List<Event> _eventList = [];
+  List<Planet> _planetList = [];
+  //List<Event> _eventList = [];
   @override
   initState() {
     super.initState();
@@ -68,35 +71,58 @@ class _MyHomePageState extends State<MyHomePage> {
     IO.io('http://223.18.74.197:5000');
   }
 
-  void _addEvent(Event event) {
+  void _addEvent(Planet event) {
     setState(() {
-      _eventList = List.from(_eventList)..add(event);
+      _planetList = List.from(_planetList)..add(event);
     });
   }
 
   Future<void> _getEventList() async {
-    _eventList.clear();
+    //_eventList.clear();
+    _planetList.clear();
     var result =
         (await http.get(Uri.parse('http://223.18.74.197:5000/eventList')));
     List<dynamic> events = jsonDecode(result.body);
+
     for (var event in events) {
-      _addEvent((EventDao.fromJson(event).ConvertToEvent()));
+      _addEvent((EventDao.fromJson(event).convertToEvent()));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
       body: RefreshIndicator(
         onRefresh: _getEventList,
-        child: ListView.builder(
-            itemCount: _eventList.length,
-            itemBuilder: (context, index) {
-              return convertDto(_eventList[index]);
-            }),
+        child: Container(
+            color: const Color(0xFF736AB7),
+            child: CustomScrollView(slivers: <Widget>[
+              SliverAppBar(
+                centerTitle: true,
+                /*  flexibleSpace: Stack(
+                  children: <Widget>[
+                    Positioned.fill(
+                        child: Image.network(
+                      "https://st4.depositphotos.com/11486368/25799/v/950/depositphotos_257990538-stock-illustration-chill-out-open-mic-party.jpg",
+                      fit: BoxFit.cover,
+                    ))
+                  ],
+                ), */
+                title: Text("USERNAME"),
+                expandedHeight: 230.0,
+                floating: false,
+                pinned: true,
+                snap: false,
+              ),
+              SliverFixedExtentList(
+                itemExtent: 152.0,
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => EventRow(
+                      event: _planetList[index], getEventList: _getEventList),
+                  childCount: _planetList.length,
+                ),
+              ),
+            ])),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
