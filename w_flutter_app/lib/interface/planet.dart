@@ -1,3 +1,5 @@
+import 'package:w_flutter_app/interface/event_detail.dart';
+
 class Planet {
   final int id;
   final String location;
@@ -27,4 +29,8 @@ class Planet {
         'description': description,
         'icon': icon,
       };
+
+/*   EventDetail void ConvertToEventDetail() {
+    return EventDetail(attendNumber, restTime, place, time, date)
+  } */
 }

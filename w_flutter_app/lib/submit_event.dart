@@ -12,9 +12,9 @@ class SubmitEventPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Submit Event'),
+        title: const Text('Submit Event'),
       ),
-      body: FormSubmit(),
+      body: const FormSubmit(),
     );
   }
 }

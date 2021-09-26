@@ -4,8 +4,6 @@ import 'package:flutter/widgets.dart';
 import 'package:w_flutter_app/event.dart';
 import 'package:w_flutter_app/interface/planet.dart';
 
-import '../submit_event.dart';
-
 class EventRow extends StatelessWidget {
   late final Planet event;
   late final Future<void> Function() getEventList;
@@ -16,9 +14,12 @@ class EventRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context,
-                MaterialPageRoute(builder: (context) => EventPage(event.id)))
-            .then((value) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => EventPage(
+                      event: event,
+                    ))).then((value) {
           if (value == true) {
             getEventList();
           }
