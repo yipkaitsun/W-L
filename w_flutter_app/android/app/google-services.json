@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "156157561371",
+    "project_id": "wl-notifier",
+    "storage_bucket": "wl-notifier.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:156157561371:android:41a15648d4b473a883c6be",
+        "android_client_info": {
+          "package_name": "w.com.w_flutter_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "156157561371-umj41ujdg3ujqheqrh381omb18neg3mj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBi1qclNdt1KN3YSGfHY1a2Tro2b-iqW14"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "156157561371-umj41ujdg3ujqheqrh381omb18neg3mj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

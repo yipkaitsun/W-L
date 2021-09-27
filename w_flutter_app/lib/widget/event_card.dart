@@ -44,7 +44,7 @@ class EventRow extends StatelessWidget {
       height: 124.0,
       margin: const EdgeInsets.only(left: 25.0),
       decoration: BoxDecoration(
-        color: const Color(0xFF333366),
+        color: const Color(0xFFFFFFFF),
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(8.0),
         boxShadow: const <BoxShadow>[
@@ -73,28 +73,47 @@ class EventRow extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Container(height: 5.0),
-        Text(event.location, style: subHeaderTextStyle),
+        Text(event.location,
+            style: const TextStyle(
+                fontSize: 16.0,
+                color: Color(0xff495867),
+                fontWeight: FontWeight.w500)),
         Container(height: 10.0),
-        Text(event.type, style: subHeaderTextStyle),
+        Text(event.type,
+            style: const TextStyle(
+                fontSize: 12.0,
+                color: Color(0xff495867),
+                fontWeight: FontWeight.w400)),
         Container(
             margin: const EdgeInsets.symmetric(vertical: 8.0),
             height: 2.0,
             width: 18.0,
-            color: const Color(0xff00c6ff)),
+            color: const Color(0xff577399)),
         Row(
           children: <Widget>[
-            Image.asset("assets/ic_distance.png", height: 8.0),
+            Image.asset("assets/ic_distance.png",
+                height: 8.0, color: const Color(0xffff3366)),
             Container(width: 8.0),
             Text(
               event.date,
-              style: regularTextStyle,
+              style: const TextStyle(
+                  color: Color(0xFF416788),
+                  fontSize: 11.0,
+                  fontWeight: FontWeight.w400),
             ),
             Container(width: 24.0),
-            Image.asset("assets/ic_gravity.png", height: 8.0),
+            Image.asset(
+              "assets/ic_gravity.png",
+              height: 8.0,
+              color: const Color(0xffff3366),
+            ),
             Container(width: 8.0),
             Text(
               event.time,
-              style: regularTextStyle,
+              style: const TextStyle(
+                  fontSize: 11.0,
+                  color: Color(0xFF416788),
+                  fontWeight: FontWeight.w400),
             ),
           ],
         ),

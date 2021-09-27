@@ -54,28 +54,32 @@ class _AttendanceListState extends State<AttendanceList> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: RefreshIndicator(
+      triggerMode: RefreshIndicatorTriggerMode.anywhere,
       onRefresh: _getAttendanceList,
-      child: ListView.separated(
-        itemCount: _attendanceList.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            trailing: _attendanceList[index].isAccept == 'Y' ||
-                    _attendanceList[index].isAccept == 'N'
-                ? _attendanceList[index].isAccept == 'Y'
-                    ? chip('Yes', const Color(0xFF74C33F))
-                    : chip('No', const Color(0xFFC3553F))
-                : chip('Waiting', const Color(0xFFC3B03F)),
-            leading: CircleAvatar(
-              radius: 50.0,
-              backgroundImage: NetworkImage(_attendanceList[index].icon),
-              backgroundColor: Colors.transparent,
+      child: _attendanceList.isEmpty
+          ? Image.asset("assets/loading.gif")
+          : ListView.separated(
+              itemCount: _attendanceList.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  trailing: _attendanceList[index].isAccept == 'Y' ||
+                          _attendanceList[index].isAccept == 'N'
+                      ? _attendanceList[index].isAccept == 'Y'
+                          ? chip('Yes', const Color(0XFF06d6a0))
+                          : chip('No', const Color(0xFFEF476F))
+                      : chip('Waiting', const Color(0xFFFFD166)),
+                  leading: CircleAvatar(
+                    radius: 50.0,
+                    backgroundImage: NetworkImage(_attendanceList[index].icon),
+                    backgroundColor: Colors.transparent,
+                  ),
+                  title: Text(_attendanceList[index].name),
+                  subtitle: Text(_attendanceList[index].contents),
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) =>
+                  const Divider(),
             ),
-            title: Text(_attendanceList[index].name),
-            subtitle: Text(_attendanceList[index].contents),
-          );
-        },
-        separatorBuilder: (BuildContext context, int index) => const Divider(),
-      ),
     ));
   }
 

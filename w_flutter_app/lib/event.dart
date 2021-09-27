@@ -12,10 +12,11 @@ class EventPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+            backgroundColor: Color(0xFFC0D6DF),
             bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(270.0),
-          child: EventDetailCard(event: event),
-        )),
+              preferredSize: const Size.fromHeight(270.0),
+              child: EventDetailCard(event: event),
+            )),
         body: AttendanceList(id: event.id, title: 'AttendanceList'));
   }
 }

@@ -37,6 +37,7 @@ class _State extends State<EventDetailCard> {
   Widget build(BuildContext context) {
     return Center(
         child: Badge(
+            badgeColor: Color(0xFFFDD982),
             position: BadgePosition.bottomEnd(bottom: 10, end: 10),
             badgeContent: Container(
               width: 18,
@@ -44,7 +45,7 @@ class _State extends State<EventDetailCard> {
               alignment: Alignment.center,
               child: Text(
                 _id.toString(),
-                style: const TextStyle(color: Colors.white, fontSize: 10),
+                style: const TextStyle(color: Color(0XFF50514f), fontSize: 10),
               ),
             ),
             child: GestureDetector(
@@ -55,7 +56,7 @@ class _State extends State<EventDetailCard> {
                     padding:
                         const EdgeInsets.only(left: 20, right: 20, top: 20),
                     decoration: const BoxDecoration(
-                      color: Colors.green,
+                      color: Color(0xF6F6F6),
                       borderRadius: BorderRadius.all(
                         Radius.circular(12.0),
                       ),

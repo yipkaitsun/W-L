@@ -8,7 +8,12 @@ Widget chip(String label, Color color) {
     labelPadding: const EdgeInsets.all(5.0),
     avatar: CircleAvatar(
       backgroundColor: Colors.grey.shade600,
-      child: Text(label[0].toUpperCase()),
+      child: Text(
+        label[0].toUpperCase(),
+        style: const TextStyle(
+          color: Colors.white,
+        ),
+      ),
     ),
     label: Text(
       label,

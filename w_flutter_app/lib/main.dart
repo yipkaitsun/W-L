@@ -1,13 +1,25 @@
 import 'dart:convert';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:w_flutter_app/interface/event_dao.dart';
 import 'package:w_flutter_app/interface/planet.dart';
 import 'package:w_flutter_app/submit_event.dart';
 import 'package:w_flutter_app/widget/event_card.dart';
 import 'package:http/http.dart' as http;
-import 'package:socket_io_client/socket_io_client.dart' as io;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+//import 'package:socket_io_client/socket_io_client.dart' as io;
+import 'package:firebase_messaging/firebase_messaging.dart';
 
-void main() {
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  print("Handling a background message ${message.messageId}");
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   runApp(const MyApp());
 }
 
@@ -19,9 +31,22 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.green,
+        primarySwatch: const MaterialColor(0xFF749E9F, {
+          50: Color.fromRGBO(79, 99, 103, .5),
+          100: Color.fromRGBO(79, 99, 103, .2),
+          200: Color.fromRGBO(79, 99, 103, .3),
+          300: Color.fromRGBO(79, 99, 103, .1),
+          400: Color.fromRGBO(79, 99, 103, .5),
+          500: Color.fromRGBO(79, 99, 103, .5),
+          600: Color.fromRGBO(79, 99, 103, .7),
+          700: Color.fromRGBO(79, 99, 103, .8),
+          800: Color.fromRGBO(79, 99, 103, .9),
+          900: Color.fromRGBO(79, 99, 103, 5),
+        }),
       ),
-      home: const MyHomePage(title: 'W/L Notifier'),
+      home: const MyHomePage(
+        title: 'W/L Notifier',
+      ),
     );
   }
 }
@@ -36,13 +61,69 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late ScrollController scrollController;
-
   List<Planet> _eventList = [];
+  Future<void> setAndroidNotification() async {
+    try {
+      AndroidNotificationChannel androidNotificationChannel =
+          const AndroidNotificationChannel(
+              "high_importance_channel", "Notification body", "Notification",
+              importance: Importance.high);
+
+      await FlutterLocalNotificationsPlugin()
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>()
+          ?.createNotificationChannel(androidNotificationChannel);
+    } catch (e) {
+      // Handle error...
+      // 处理代码执行错误...
+    }
+  }
+
+  Future<void> setForegroundNotificationPresentationOptions() async {
+    try {
+      await FirebaseMessaging.instance
+          .setForegroundNotificationPresentationOptions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   initState() {
     super.initState();
     _getEventList();
-    io.io('http://223.18.74.197:5000');
+
+    setAndroidNotification().then((value) async {
+      setForegroundNotificationPresentationOptions();
+    }).then((value) {
+      FirebaseMessaging.onMessage.listen((message) async {
+        RemoteNotification? notification = message.notification;
+        AndroidNotification? android = message.notification?.android;
+
+        if (notification != null && android != null) {
+          await FlutterLocalNotificationsPlugin().show(
+              notification.hashCode,
+              notification.title,
+              notification.body,
+              const NotificationDetails(
+                android: AndroidNotificationDetails("high_importance_channel",
+                    "Notification body", "Notification",
+                    icon: 'launch_background',
+                    priority: Priority.high,
+                    importance: Importance.high),
+              ));
+        }
+      });
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      _getEventList();
+    });
+    //io.io('http://223.18.74.197:5000');
     scrollController = ScrollController();
   }
 
@@ -68,7 +149,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: RefreshIndicator(
         onRefresh: _getEventList,
         child: Container(
-            color: const Color(0xFF736AB7),
+            color: const Color(0xFFF8F8F8),
             child: CustomScrollView(
                 controller: scrollController,
                 slivers: <Widget>[
